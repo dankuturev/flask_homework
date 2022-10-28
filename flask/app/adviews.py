@@ -1,8 +1,10 @@
-from sqlalchemy.exc import IntegrityError
-from flask.views import MethodView
-from flask import request, jsonify
 from typing import Optional
+from flask import request, jsonify
+from flask.views import MethodView
 import pydantic
+from sqlalchemy.exc import IntegrityError
+
+
 from admodel import Ad
 from server import Session, app
 

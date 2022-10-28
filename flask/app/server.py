@@ -1,8 +1,10 @@
-from admodel import Base
-from sqlalchemy import create_engine
-from sqlalchemy.orm.session import sessionmaker
 import atexit
 from flask import Flask
+from sqlalchemy import create_engine
+from sqlalchemy.orm.session import sessionmaker
+
+
+from admodel import Base
 
 
 app = Flask('server')
