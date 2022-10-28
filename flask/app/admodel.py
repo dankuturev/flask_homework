@@ -1,5 +1,8 @@
 from sqlalchemy import Column, Integer, String, Date, func
-from app.server import engine, Base
+from sqlalchemy.ext.declarative import declarative_base
+
+
+Base = declarative_base()
 
 
 class Ad(Base):
@@ -10,6 +13,3 @@ class Ad(Base):
     description = Column(String(500), nullable=False)
     create_date = Column(Date, server_default=func.now())
     owner = Column(String(120), nullable=False)
-
-
-Base.metadata.create_all(engine)

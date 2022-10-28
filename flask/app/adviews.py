@@ -1,11 +1,75 @@
-from flask.views import MethodView
-from flask import jsonify, request
 from sqlalchemy.exc import IntegrityError
+from flask.views import MethodView
+from flask import request, jsonify
+from typing import Optional
 import pydantic
+from admodel import Ad
+from server import Session, app
 
 
-from app.server import Session, HttpError, CreateAdSchema, PatchAdSchema
-from app.admodel import Ad
+class HttpError(Exception):
+
+    def __init__(self, status_code: int, message: str | dict | list):
+        self.status_code = status_code
+        self.message = message
+
+
+@app.errorhandler(HttpError)
+def http_error_handler(err: HttpError):
+    responce = jsonify({
+        'status': 'error',
+        'message': err.message
+    })
+    responce.status_code = err.status_code
+    return responce
+
+
+class CreateAdSchema(pydantic.BaseModel):
+    header: str
+    description: str
+    owner: str
+
+    @pydantic.validator('header')
+    def header_not_epty(cls, value: str):
+        if len(value) == 0:
+            raise ValueError('header_is_empty')
+        return value
+
+    @pydantic.validator('description')
+    def description_not_epty(cls, value: str):
+        if len(value) == 0:
+            raise ValueError('description_is_empty')
+        return value
+
+    @pydantic.validator('owner')
+    def owner_not_epty(cls, value: str):
+        if len(value) == 0:
+            raise ValueError('owner_is_empty')
+        return value
+
+
+class PatchAdSchema(pydantic.BaseModel):
+    header: Optional[str]
+    description: Optional[str]
+    owner: Optional[str]
+
+    @pydantic.validator('header')
+    def header_not_epty(cls, value: str):
+        if len(value) == 0:
+            raise ValueError('header_is_empty')
+        return value
+
+    @pydantic.validator('description')
+    def description_not_epty(cls, value: str):
+        if len(value) == 0:
+            raise ValueError('description_is_empty')
+        return value
+
+    @pydantic.validator('owner')
+    def owner_not_epty(cls, value: str):
+        if len(value) == 0:
+            raise ValueError('owner_is_empty')
+        return value
 
 
 def validate(Schema, data: dict):
@@ -28,7 +92,7 @@ class AdViews(MethodView):
     def get(self, ad_id: int):
         with Session() as session:
             ad = get_ad(ad_id, session)
-        return jsonify({'header': ad.header, 'description': ad.description, 'date': ad.creation_date.isoformat(),
+        return jsonify({'header': ad.header, 'description': ad.description, 'date': ad.create_date.isoformat(),
                         'owner': ad.owner})
 
     def post(self):
