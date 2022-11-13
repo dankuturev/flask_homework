@@ -1,0 +1,6 @@
+asyncio
+asyncpg
+aiohttp
+more_itertools
+sqlalchemy
+psycopg2
